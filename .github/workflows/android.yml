@@ -12,30 +12,24 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install System Dependencies
+      - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential libffi-dev python3-dev zip unzip autoconf autotools-dev libtool pkg-config cmake
-          # Cài đặt thêm các thư viện đồ họa cần thiết cho Kivy
-          sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev
-
-      - name: Install Python Tools
-        run: |
           pip install --upgrade pip
-          # Sử dụng phiên bản Cython an toàn nhất cho Kivy 2.x
-          pip install "Cython<3.0" wheel setuptools
-          pip install buildozer
+          pip install "Cython<3.0" wheel buildozer
 
       - name: Build with Buildozer
         run: |
-          # Xóa các bản build lỗi trước đó nếu có
-          rm -rf .buildozer
-          # Chạy lệnh build chính thức
-          yes | buildozer -v android debug
+          # Chạy buildozer mà không cần lệnh 'yes'
+          buildozer android debug
+        env:
+          # Ép hệ thống chấp nhận các điều khoản SDK mà không cần hỏi
+          APP_ANDROID_ACCEPT_SDK_LICENSE: "1"
         
       - name: Upload APK
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: final-android-apk
+          name: my-app-apk
           path: bin/*.apk
