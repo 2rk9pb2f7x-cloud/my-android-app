@@ -3,27 +3,31 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.10'
 
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential libffi-dev python3-dev zip unzip autoconf autotools-dev libtool
+          sudo apt-get install -y build-essential libffi-dev python3-dev zip unzip autoconf autotools-dev libtool pkg-config cmake
           pip install --upgrade pip
-          pip install "Cython<3.0" wheel buildozer kivy
+          pip install "Cython<3.0" wheel buildozer kivy==2.1.0
 
       - name: Build with Buildozer
-        run: yes | buildozer -v android debug
+        run: |
+          # Cấp quyền thực thi và chạy build
+          chmod +x $(which buildozer)
+          yes | buildozer -v android debug
         
       - name: Upload APK
+        if: always() # Luôn cố gắng upload nếu có file sinh ra
         uses: actions/upload-artifact@v4
         with:
-          name: my-app-bundle
+          name: my-app-apk
           path: bin/*.apk
