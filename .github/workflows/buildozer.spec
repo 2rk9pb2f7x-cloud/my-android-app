@@ -1,60 +1,66 @@
 [app]
+# (str) Title of your application
+title = My Application
 
-# (str) Tên ứng dụng hiển thị trên điện thoại
-title = System Service
+# (str) Package name
+package.name = myapp
 
-# (str) Tên gói
-package.name = system_update
+# (str) Package domain (needed for android packaging)
+package.domain = org.test
 
-# (str) Tên miền gói
-package.domain = org.service
-
-# (str) Thư mục chứa main.py
+# (str) Source code where the main.py live
 source.dir = .
 
-# (list) Các định dạng file bao gồm trong APK
+# (list) Source files to include (let empty to include all the files)
 source.include_exts = py,png,jpg,kv,atlas
 
-# (str) Phiên bản ứng dụng
-version = 1.0.0
+# (str) Application versioning (method 1)
+version = 0.1
 
-# (list) QUAN TRỌNG: Cố định phiên bản để tránh lỗi Command Failed trên Colab
-requirements = python3,kivy==2.1.0,pyjnius
+# (list) Application requirements
+# QUAN TRỌNG: Cố định phiên bản Kivy và Cython để tránh lỗi máy chủ
+requirements = python3,kivy==2.1.0,pyjnius,android
 
-# (list) Quyền truy cập hệ thống để gửi dữ liệu về Dashboard
-android.permissions = INTERNET, FOREGROUND_SERVICE, READ_EXTERNAL_STORAGE, WAKE_LOCK
-
-# (str) Hướng màn hình
+# (str) Supported orientations
 orientation = portrait
 
-# (bool) Chế độ toàn màn hình
-fullscreen = 0
+# -----------------------------------------------------------------------------
+# Android specific
+# -----------------------------------------------------------------------------
 
-# (int) Android API target
+# (int) Android API to use
+# Dùng API 31 để ổn định nhất trên GitHub Actions hiện tại
 android.api = 31
 
-# (int) Android API tối thiểu hỗ trợ
+# (int) Minimum API your APK will support.
 android.minapi = 21
 
-# (bool) Tự động đồng ý điều khoản Google
-android.accept_sdk_license = True
+# (int) Android SDK version to use
+android.sdk = 31
 
-# (list) Kiến trúc chip hỗ trợ
-android.archs = arm64-v8a, armeabi-v7a
+# (str) Android NDK version to use
+android.ndk = 25b
 
-# (bool) Cho phép sao lưu dữ liệu ứng dụng
-android.allow_backup = True
+# (bool) Use --private data storage (True) or --dir public storage (False)
+android.private_storage = True
+
+# (list) Android architectures to build for
+# Build cho cả điện thoại đời cũ và đời mới
+android.archs = armeabi-v7a, arm64-v8a
+
+# (bool) Allow skipping setup.py check
+android.skip_setup_py = True
 
 # -----------------------------------------------------------------------------
-# PHẦN SỬA LỖI P4A BRANCH (DÒNG 380-400)
+# Buildozer specific
 # -----------------------------------------------------------------------------
-# Ép sử dụng bản release ổn định để tương thích với môi trường Python mới
-p4a.branch = release-2022.12.20
 
-[buildozer]
-
-# (int) Mức độ log (2 để xem chi tiết quá trình build)
+# (int) Log level (0 = error only, 1 = info, 2 = debug (with command output))
 log_level = 2
 
-# (int) Hiển thị cảnh báo nếu chạy quyền root
-warn_on_root = 1
+# (int) Display warning if buildozer is run as root (0 = no, 1 = yes)
+warn_on_root = 0
+
+[buildozer]
+# (str) Path to build artifacts
+bin_dir = ./bin
